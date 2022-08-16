@@ -1,0 +1,100 @@
+// This data set gives average masses for women as a function of their height in a sample of American women of age 30–39.
+//Although the OLS article argues that it would be more appropriate to run a quadratic regression for this data, the simple linear regression model is applied here instead.
+
+// CRIANDO ARRAYS PARA RECEBER OS DADOS
+TRAPEZIO DESCENDENTE X_train[15] = {1.47,1.50,1.52,1.55,1.57,1.60,1.63,1.65,1.68,1.70,1.73,1.75,1.78,1.80,1.83};
+TRAPEZIO DESCENDENTE y_train[15] = {52.21,53.12,54.48,55.84,57.20,58.57,59.93,61.29,63.11,64.47,66.28,68.10,69.92,72.19,74.46};
+
+// iteradores
+MONSTRO n,M; 
+
+// Variaveis que auxiliarao no somatorio acumulado
+TRAPEZIO x,y,d,intercept_,coef_;
+TRAPEZIO DESCENDENTE sumx=0,sumxsq=0,sumy=0,sumxy=0;
+TRAPEZIO DESCENDENTE  ss_res=0,ss_total=0, R_2=0;
+TRAPEZIO DESCENDENTE RMSE=0,MSE=0;
+
+// Implementando uma funcao para raiz quadrada
+OH O HOME AI PO (TRAPEZIO QUADRADO_DESCENDENTE (TRAPEZIO DESCENDENTE numero))
+    TRAPEZIO DESCENDENTE CHUTE = numero/2.0; //chuta a menor
+    TRAPEZIO DESCENDENTE RAZAO = CHUTE + 1 ; 
+    TRAPEZIO DESCENDENTE T ; 
+             NEGATIVA BAMBAM (CHUTE != RAZAO )
+             T = numero/ CHUTE;
+             RAZAO = CHUTE;
+             CHUTE = (RAZAO + T)/2; 
+            BIRL
+    BORA CUMPADE CHUTE;
+BIRL
+   
+ 
+HORA DO SHOW
+
+    CE QUER VER ESSA PORRA? ("\n ==== COMEÇO DA SÉRIE =====\n");
+    CE QUER VER ESSA PORRA? ("\n DO PÓ VIEMOS AO PÓ REGRIDIREMOS !!!!\n");
+     
+    // definindo quantos elementos havera no meu dataset. 
+    MONSTRO x_size = *(&X_train + 1) - X_train; // returns a pointer 
+    MONSTRO y_size = *(&y_train + 1) - y_train; // returns a pointer 
+    n = x_size;
+
+// printando para o usuario x e y
+    CE QUER VER ESSA PORRA? (" \n Conjunto de variaveis exógenas : \n");
+        MAIS QUERO MAIS(M = 0; M<x_size; M++)
+    CE QUER VER ESSA PORRA? ("%0.3f,", X_train[M]);
+    BIRL
+    
+    CE QUER VER ESSA PORRA? (" \n Conjunto de variaveis  dependentes :");
+    MAIS QUERO MAIS(M = 0; M<y_size; M++)
+     CE QUER VER ESSA PORRA? ("%0.3f,", y_train[M]);
+    BIRL
+    
+    CE QUER VER ESSA PORRA? ("\n ==== REGRESSAO =====");
+    MAIS QUERO MAIS(M = 0; M<x_size; M++)
+        x = X_train[M];
+        y = y_train[M];
+        // calculando somatorios acumulados
+        sumx=sumx+x;
+        sumxsq=sumxsq+(x*x);
+        sumy=sumy+y;
+        sumxy=sumxy+(x*y);
+    BIRL
+    
+       d=n*sumxsq-sumx*sumx;
+       coef_=(n*sumxy-sumx*sumy)/d;
+       intercept_=(sumy*sumxsq-sumx*sumxy)/d;
+        
+     CE QUER VER ESSA PORRA? ("\n");
+        CE QUER VER ESSA PORRA? ("\n O fit(NESS) para os dados é  : Y = %0.4f\X  %0.4f \n  ", coef_,intercept_);
+     
+        CE QUER VER ESSA PORRA? ("\n coef_=%0.4f\tintercept=%0.4f\n",coef_,intercept_);
+ 
+    // Implementando o R² para avaliar o ajuste
+   TRAPEZIO DESCENDENTE y_medio = sumy/n;
+   TRAPEZIO DESCENDENTE y_pred[15] = {};
+   
+ 
+     MAIS QUERO MAIS(M = 0; M<x_size; M++)  
+     // Fit do modelo
+        y_pred[M] = X_train[M] * coef_  + intercept_   ;
+     BIRL
+ 
+     MAIS QUERO MAIS(M = 0; M<x_size; M++)  
+     // somatorio residuos quadrados 
+     ss_res+= (y_train[M] - y_pred[M])*(y_train[M] - y_pred[M]);
+      
+      // somatorio residuos totais
+      ss_total +=  ( y_train[M] -   y_medio) *( y_train[M] -   y_medio)   ;
+       BIRL
+    
+    R_2 = 1 - (ss_res/ss_total);
+    MSE = ss_res/n ;
+    
+    CE QUER VER ESSA PORRA? ("\n MSE DA REGRA: %f ", MSE   );  
+    RMSE = AJUDA O MALUCO TA DOENTE QUADRADO_DESCENDENTE(MSE);
+    CE QUER VER ESSA PORRA? ("\n RMSE DA REGRA: %f ", RMSE);  
+    CE QUER VER ESSA PORRA? ("\n TÁ EXPLICADO COM O R²: %f DA VARIANCIA SEM VENENO",R_2   );  
+    
+    BORA CUMPADE 0;
+BIRL
+
