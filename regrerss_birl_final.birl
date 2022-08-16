@@ -1,4 +1,4 @@
-// This data set gives average masses for women as a function of their height in a sample of American women of age 30–39.
+// This data set gives average masses for women as a function of their height in a sample of American women of age 30â€“39.
 //Although the OLS article argues that it would be more appropriate to run a quadratic regression for this data, the simple linear regression model is applied here instead.
 
 // CRIANDO ARRAYS PARA RECEBER OS DADOS
@@ -10,7 +10,7 @@ MONSTRO n,M;
 
 // Variaveis que auxiliarao no somatorio acumulado
 TRAPEZIO x,y,d,intercept_,coef_;
-TRAPEZIO DESCENDENTE sumx=0,sumxsq=0,sumy=0,sumxy=0;
+TRAPEZIO DESCENDENTE sumx=0,sumxsq=0,sumysq=0,sumy=0,sumxy=0;
 TRAPEZIO DESCENDENTE  ss_res=0,ss_total=0, R_2=0;
 TRAPEZIO DESCENDENTE RMSE=0,MSE=0;
 
@@ -30,8 +30,8 @@ BIRL
  
 HORA DO SHOW
 
-    CE QUER VER ESSA PORRA? ("\n ==== COMEÇO DA SÉRIE =====\n");
-    CE QUER VER ESSA PORRA? ("\n DO PÓ VIEMOS AO PÓ REGRIDIREMOS !!!!\n");
+    CE QUER VER ESSA PORRA? ("\n ==== COMEÃ‡O DA SÃ‰RIE =====\n");
+    CE QUER VER ESSA PORRA? ("\n DO PÃ“ VIEMOS AO PÃ“ REGRIDIREMOS !!!!\n");
      
     // definindo quantos elementos havera no meu dataset. 
     MONSTRO x_size = *(&X_train + 1) - X_train; // returns a pointer 
@@ -39,7 +39,7 @@ HORA DO SHOW
     n = x_size;
 
 // printando para o usuario x e y
-    CE QUER VER ESSA PORRA? (" \n Conjunto de variaveis exógenas : \n");
+    CE QUER VER ESSA PORRA? (" \n Conjunto de variaveis exÃ³genas : \n");
         MAIS QUERO MAIS(M = 0; M<x_size; M++)
     CE QUER VER ESSA PORRA? ("%0.3f,", X_train[M]);
     BIRL
@@ -56,8 +56,10 @@ HORA DO SHOW
         // calculando somatorios acumulados
         sumx=sumx+x;
         sumxsq=sumxsq+(x*x);
+        sumysq=sumysq+(y*y);
         sumy=sumy+y;
         sumxy=sumxy+(x*y);
+        
     BIRL
     
        d=n*sumxsq-sumx*sumx;
@@ -65,11 +67,11 @@ HORA DO SHOW
        intercept_=(sumy*sumxsq-sumx*sumxy)/d;
         
      CE QUER VER ESSA PORRA? ("\n");
-        CE QUER VER ESSA PORRA? ("\n O fit(NESS) para os dados é  : Y = %0.4f\X  %0.4f \n  ", coef_,intercept_);
+        CE QUER VER ESSA PORRA? ("\n O fit(NESS) para os dados Ã©  : Y = %0.4f\X  %0.4f \n  ", coef_,intercept_);
      
         CE QUER VER ESSA PORRA? ("\n coef_=%0.4f\tintercept=%0.4f\n",coef_,intercept_);
  
-    // Implementando o R² para avaliar o ajuste
+    // Implementando o RÂ² para avaliar o ajuste
    TRAPEZIO DESCENDENTE y_medio = sumy/n;
    TRAPEZIO DESCENDENTE y_pred[15] = {};
    
@@ -82,19 +84,65 @@ HORA DO SHOW
      MAIS QUERO MAIS(M = 0; M<x_size; M++)  
      // somatorio residuos quadrados 
      ss_res+= (y_train[M] - y_pred[M])*(y_train[M] - y_pred[M]);
-      
       // somatorio residuos totais
-      ss_total +=  ( y_train[M] -   y_medio) *( y_train[M] -   y_medio)   ;
+      ss_total +=  ( y_train[M] -  y_medio) *( y_train[M] - y_medio)   ;
        BIRL
     
     R_2 = 1 - (ss_res/ss_total);
     MSE = ss_res/n ;
-    
-    CE QUER VER ESSA PORRA? ("\n MSE DA REGRA: %f ", MSE   );  
     RMSE = AJUDA O MALUCO TA DOENTE QUADRADO_DESCENDENTE(MSE);
-    CE QUER VER ESSA PORRA? ("\n RMSE DA REGRA: %f ", RMSE);  
-    CE QUER VER ESSA PORRA? ("\n TÁ EXPLICADO COM O R²: %f DA VARIANCIA SEM VENENO",R_2   );  
     
+    
+    // Metricas de avaliaÃ§Ã£o 
+    CE QUER VER ESSA PORRA? ("\n MSE DA REGRA: %f ", MSE   );  
+    CE QUER VER ESSA PORRA? ("\n RMSE DA REGRA: %f ", RMSE);  
+    
+    // Analise da Variancia  
+    CE QUER VER ESSA PORRA? ("\n ==== ANOVA ===== \n");
+    CE QUER VER ESSA PORRA? ("\n TÃ EXPLICADO COM O RÂ²: %00f DA VARIANCIA SEM VENENO",R_2   );  
+    
+
+    TRAPEZIO DESCENDENTE s_eps,s_beta, s_alfa,F_STAT, desv_beta,desv_alfa, t_beta,t_alfa,t_beta_mod,t_alfa_mod;
+     
+    s_eps = ss_res/(n-2);
+    s_beta =  n*s_eps/(n*sumxsq - sumx*sumx);
+    s_alfa = s_beta*sumxsq/n;
+    
+    desv_beta = AJUDA O MALUCO TA DOENTE QUADRADO_DESCENDENTE(s_beta);
+    desv_alfa = AJUDA O MALUCO TA DOENTE QUADRADO_DESCENDENTE(s_alfa);
+    
+    t_beta = coef_ / desv_beta;
+    t_alfa = intercept_ / desv_alfa;
+    
+   t_beta_mod = AJUDA O MALUCO TA DOENTE QUADRADO_DESCENDENTE(t_beta*t_beta);
+   t_alfa_mod = AJUDA O MALUCO TA DOENTE QUADRADO_DESCENDENTE(t_alfa*t_alfa);
+   
+    
+    CE QUER VER ESSA PORRA? ("\n A variancia do residuo SÂ²: %0.4f ", s_eps );
+    CE QUER VER ESSA PORRA? (" s_beta : %f \n", s_beta);
+    CE QUER VER ESSA PORRA? ("s_alfa : %f \n", s_alfa);
+      
+      // TESTANDO A SIGNIFICANCIA DO COEFICIENTE DA ALTURA NO MODELO
+    CE QUER VER ESSA PORRA? ("\n A estatistica t para o coeficiente angular Beta c/ n-2 GL Ã©: %f \n",t_beta);
+    
+     ELE QUE A GENTE QUER? (t_beta_mod >= 2)
+      CE QUER VER ESSA PORRA? ("\n A HIPOTESE DE NULIDADE DE BETA FOI REJEITADA! PASSAMO!");
+    NAO VAI DAR NAO 
+      CE QUER VER ESSA PORRA? ("\n A HIPOTESE DE NULIDADE DE BETA NÃƒO FOI REJEITADA! PERDEMO! ");
+    BIRL
+     
+     // vamos testar nossa constante 
+      CE QUER VER ESSA PORRA? ("\n  A estatistica t para o intercepto c/ n-2 GL Ã©: %f \n",t_alfa);
+     ELE QUE A GENTE QUER? (t_alfa_mod >= 2)
+      CE QUER VER ESSA PORRA? ("\n A HIPOTESE DE NULIDADE DE ALFA FOI REJEITADA! PASSO");
+    NAO VAI DAR NAO 
+      CE QUER VER ESSA PORRA? ("\n A HIPOTESE DE NULIDADE DE ALFA NÃƒO FOI REJEITADA! PERDEMO! ");
+    BIRL
+ 
+   F_STAT = R_2 *ss_total/s_eps;
+
+      CE QUER VER ESSA PORRA? ("\n O valor da estatistica F Ã© : %f",F_STAT);
+ 
     BORA CUMPADE 0;
 BIRL
 
